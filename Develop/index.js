@@ -95,8 +95,13 @@ const questions = [
         }
     },
 ];
+
 // function to write README file
 function writeToFile(fileName, data) {
+    return `
+        Name: ${fileName}
+        Data: ${data}
+    `;
 }
 
 // function to initialize program
@@ -105,5 +110,9 @@ function init() {
 }
 
 // function call to initialize program
-init();
+init()
+.then(data => {
+    console.log(data)
+    return writeToFile(data);
+})
 
