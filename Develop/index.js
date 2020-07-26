@@ -1,10 +1,38 @@
 const generateMarkdown = require('./utils/generateMarkdown');
 const inquirer = require('inquirer');
+const fs = require('fs');
+const path = require('path');
 // array of questions for user
 const questions = [
     {
         type: 'input',
-        name: 'projectName',
+        name: 'username',
+        message: 'What is your GitHub username?',
+        validate: nameInput => {
+            if(nameInput) {
+                return true;
+            } else {
+                console.log('Please enter the username!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'What is the your email?',
+        validate: nameInput => {
+            if(nameInput) {
+                return true;
+            } else {
+                console.log('Please enter your email!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'title',
         message: 'What is the title of your project?',
         validate: nameInput => {
             if(nameInput) {
@@ -42,16 +70,9 @@ const questions = [
         }
     },
     {
-        type: 'confirm',
-        name: 'confirmUsage',
-        message: 'Would you like to include usage informatin?',
-        default: true
-    },
-    {
         type: 'input',
         name: 'usage',
         message: 'Provide some information on the usage',
-        when: ({ confirmUsage }) => confirmUsage,
         validate: nameInput => {
             if(nameInput) {
                 return true;
@@ -62,16 +83,15 @@ const questions = [
         }
     },
     {
-        type: 'confirm',
-        name: 'confirmContribution',
-        message: 'Would you like to include contribution guidelines?',
-        default: true
+        type: 'checkbox',
+        name: 'license',
+        message: 'What licenses are applicable? (Select all that apply)',
+        choices: ['mit', 'apache-2.0', 'wtfpl', 'gpl-3.0'],
     },
     {
         type: 'input',
         name: 'contribution',
         message: 'Provide some information on the contribution guidelines',
-        when: ({ confirmContribution }) => confirmContribution,
         validate: nameInput => {
             if(nameInput) {
                 return true;
@@ -98,10 +118,8 @@ const questions = [
 
 // function to write README file
 function writeToFile(fileName, data) {
-    return `
-        Name: ${fileName}
-        Data: ${data}
-    `;
+    return fs.writeFileSync(
+        path.join(process.cwd(), fileName), data)
 }
 
 // function to initialize program
@@ -112,7 +130,6 @@ function init() {
 // function call to initialize program
 init()
 .then(data => {
-    console.log(data)
-    return writeToFile(data);
+    return writeToFile('README.md', generateMarkdown({...data}))
 })
 
