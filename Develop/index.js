@@ -86,7 +86,7 @@ const questions = [
         type: 'checkbox',
         name: 'license',
         message: 'What licenses are applicable? (Select all that apply)',
-        choices: ['mit', 'apache-2.0', 'wtfpl', 'gpl-3.0'],
+        choices: ['apache', 'mit', 'gpl'],
     },
     {
         type: 'input',
@@ -130,6 +130,7 @@ function init() {
 // function call to initialize program
 init()
 .then(data => {
+    console.log('README is complete!');
     return writeToFile('README.md', generateMarkdown({...data}))
 })
 
